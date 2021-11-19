@@ -39,5 +39,5 @@ def read_string(filename):
     
     return new_s1, new_s2
         
-
-print(read_string('input_algo.txt'))
+# Driver Code: returns tuple of s1, s2
+#print(read_string('input_algo.txt'))
