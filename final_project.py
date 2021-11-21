@@ -128,10 +128,14 @@ class StringMatching:
 # Driver code
 if __name__ == "__main__":
 
-    string_match = StringMatching()
+    string_match = StringMatching(INPUT_FILE='sample_test_cases/input1.txt')
     file_ops = ReadFile()
     X, Y = file_ops.read_string(string_match.INPUT_FILE)
     X_align, Y_align, min_cost = string_match.find_alignment_non_optimized(X, Y)
     X_align, Y_align, min_cost = string_match.find_alignment_binary_search_optimized(X, Y)
+
+    print('x-align: ', X_align)
+    print('y-align: ', Y_align)
+    print('cost: ', min_cost)
     
 
