@@ -1,6 +1,8 @@
-from string_create import ReadFile, write_output
+import os
 import sys
-# constants
+import time
+import psutil
+from string_create import ReadFile, write_output
 
 class StringMatching:
     
@@ -126,13 +128,21 @@ class StringMatching:
         X_right, Y_right, _ = self.find_alignment_binary_search_optimized(X[q : ], Y[n//2 : ])
         return X_left + X_right, Y_left + Y_right, min_cost
 
+def get_process_memory():
+    process_mem = psutil.Process(os.getpid())
+    return process_mem.memory_info().rss
+
 # Driver code
 if __name__ == "__main__":
-
     _, input_file = sys.argv
+    memory_usage_before = get_process_memory()
     string_match = StringMatching(INPUT_FILE=input_file)
     file_ops = ReadFile()
+    start = time.time()
     X, Y = file_ops.read_string(string_match.INPUT_FILE)
     X_align, Y_align, min_cost = string_match.find_alignment_binary_search_optimized(X, Y)
-    write_output('output.txt', X_string=X_align, Y_string=Y_align, min_cost=min_cost, time="0.001", memory="5000")
+    elapsed_time = str(round(time.time() - start, 3))
+    memory_usage_after = get_process_memory()
+    memory_used = float((memory_usage_after - memory_usage_before)/1024)
+    write_output('output.txt', X_string=X_align, Y_string=Y_align, min_cost=float(min_cost), time=elapsed_time, memory=str(memory_used))
 
