@@ -40,7 +40,24 @@ class ReadFile:
         assert len(new_s2) == len(s2) * (2 ** k), 'Mismatch Length'
         
         return new_s1, new_s2
+
+
+def write_output(output_filename, **kwargs):
+
+    if kwargs.get('X_string') == None:
+        kwargs['X_string'] = ''
+
+    if kwargs.get('Y_string') == None:
+        kwargs['Y_string'] = ''
+
+    data = f'{kwargs.get("X_string")[:50]} {kwargs.get("X_string")[-50:]}\n{kwargs.get("Y_string")[:50]} {kwargs.get("Y_string")[-50:]}\n{kwargs.get("min_cost")}\n{kwargs.get("time")}\n{kwargs.get("memory")}'
+    with open(output_filename, 'w') as file:
+        file.write(data)
+    
+    return True
+
         
 # Driver Code: returns tuple of s1, s2
 # file_ops = ReadFile()
 # print(file_ops.read_string('sample_test_cases/input1.txt'))
+# write_output('xyz.txt', Y_string="world", time="0.002", memory="3000")
