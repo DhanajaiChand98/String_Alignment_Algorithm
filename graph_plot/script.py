@@ -1,13 +1,14 @@
 import os
 import random
+from matplotlib import markers
 import pandas as pd
 import matplotlib.pyplot as plt
 
 def plot(opt_df, non_opt_df):
     # gca stands for 'get current axis'
     ax = plt.gca()
-    opt_df.plot(kind='line',x='problem_size',y='time',ax=ax)
-    non_opt_df.plot(kind='line',x='problem_size',y='time', color='red', ax=ax)
+    opt_df.plot(kind='line',x='problem_size',y='time',ax=ax, marker='o')
+    non_opt_df.plot(kind='line',x='problem_size',y='time', color='red', ax=ax, marker='o')
     plt.xlabel('Problem size')
     plt.ylabel('CPU time (in seconds)')
     plt.title('CPU time vs Problem size')
@@ -15,8 +16,8 @@ def plot(opt_df, non_opt_df):
     plt.savefig('CPUPlot.png')
     plt.show()
     ax = plt.gca()
-    opt_df.plot(kind='line',x='problem_size',y='memory',ax=ax)
-    non_opt_df.plot(kind='line',x='problem_size',y='memory', color='red', ax=ax)
+    opt_df.plot(kind='line',x='problem_size',y='memory',ax=ax, marker='o')
+    non_opt_df.plot(kind='line',x='problem_size',y='memory', color='red', ax=ax, marker='o')
     plt.xlabel('Problem size')
     plt.ylabel('Memory (in Kb)')
     plt.title('Memory usage vs Problem size')
