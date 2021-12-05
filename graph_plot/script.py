@@ -51,20 +51,66 @@ def readfile(file_name):
     return time, memory, X_len, Y_len
 
 def main():
-    ct = 100
-    string_list = generate_random_strings(ct)
-    writeToFile(string_list)
-    optimized, non_optimized = [], []
-    for ct in range(len(string_list)):
-        os.system(f'python efficient.py ./files/input{ct+1}.txt ./files/efficient/output{ct+1}.txt')
-        os.system(f'python basic.py ./files/input{ct+1}.txt ./files/basic/output{ct+1}.txt')
-        time, memory, X_len, Y_len = readfile(f'./files/efficient/output{ct+1}.txt')
-        optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
-        time, memory, X_len, Y_len = readfile(f'./files/basic/output{ct+1}.txt')
-        non_optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
+    ct, iterations = 100, 150
+    params = {}
+    # string_list = generate_random_strings(ct)
+    # writeToFile(string_list)
+
+    """
+    {
+        optimized = [{'time': float, 'memory': float}, {}, {}.....]
+    }
+    """
+
+    """
+    params = {
+        input: [opt, non_opt],
+    }
+    """
+
+    for itr in range(iterations):
+        ct = 100
+        string_list = generate_random_strings(ct)
+        writeToFile(string_list)
+
+        optimized, non_optimized = [], []
+        for ct in range(len(string_list)):
+            os.system(f'python efficient.py ./files/input{ct+1}.txt ./files/efficient/output{ct+1}.txt')
+            os.system(f'python basic.py ./files/input{ct+1}.txt ./files/basic/output{ct+1}.txt')
+            time, memory, X_len, Y_len = readfile(f'./files/efficient/output{ct+1}.txt')
+            optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
+            time, memory, X_len, Y_len = readfile(f'./files/basic/output{ct+1}.txt')
+            non_optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
+    
+        if params.get(f'input'):
+            opt, non_opt = params[f'input']
+            params[f'input'] = [add_values(opt, optimized, iterations), add_values(non_opt, non_optimized, iterations)]
+        else:
+            params[f'input'] = [divide(optimized, iterations), divide(non_optimized, iterations)]
+
+        print(f'Iteration {itr+1} done')
+    optimized, non_optimized = params['input'][0], params['input'][1]
     opt_pd = pd.DataFrame(optimized)
     non_opt_pd = pd.DataFrame(non_optimized)
     plot(opt_pd, non_opt_pd)
+
+
+def add_values(prev, current, iterations=10):
+    result = []
+    for element in zip(prev, current):
+        temp = {'time': element[0]['time'] + element[1]['time']/iterations,
+                'memory': element[0]['memory'] + element[1]['memory']/iterations,
+                'X_len': element[0]['X_len'] + element[1]['X_len']//iterations,
+                'Y_len': element[0]['Y_len'] + element[1]['Y_len']//iterations,
+                'problem_size': element[0]['problem_size'] + element[1]['problem_size']//iterations}
+        result.append(temp)
+    return result
+
+def divide(result, iterations=10):
+    for element in result:
+        element['time'], element['memory'] = element['time']/iterations, element['memory']/iterations
+        element['X_len'], element['Y_len'], element['problem_size'] = element['X_len']//iterations, element['Y_len']//iterations, element['problem_size']//iterations
+    return result
 
 if __name__ == '__main__':
     main()
