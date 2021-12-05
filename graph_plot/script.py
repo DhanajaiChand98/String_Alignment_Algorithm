@@ -51,7 +51,7 @@ def readfile(file_name):
     return time, memory, X_len, Y_len
 
 def main():
-    ct, iterations = 100, 150
+    ct, iterations = 100, 100
     params = {}
     # string_list = generate_random_strings(ct)
     # writeToFile(string_list)
