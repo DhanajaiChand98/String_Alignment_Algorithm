@@ -4,22 +4,27 @@ from matplotlib import markers
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot(opt_df, non_opt_df):
+# The scale parameter converts the Y-axis to logarithmic scale
+def plot(opt_df, non_opt_df, scale_y=True):
     # gca stands for 'get current axis'
+    y_label = 'Scaled time(Logarithmic)' if scale_y else 'time'
     ax = plt.gca()
     opt_df.plot(kind='line',x='problem_size',y='time',ax=ax, marker='o')
     non_opt_df.plot(kind='line',x='problem_size',y='time', color='red', ax=ax, marker='o')
+    if scale_y:
+        plt.yscale('log')
     plt.xlabel('Problem size')
-    plt.ylabel('CPU time (in seconds)')
+    plt.ylabel(f'CPU {"Log Scaled" if scale_y else ""} time (in seconds)')
     plt.title('CPU time vs Problem size')
     plt.legend(['Time taken by efficient version (in s)', 'Time taken by basic version (in s)'])
     plt.savefig('CPUPlot.png')
     plt.show()
+
     ax = plt.gca()
     opt_df.plot(kind='line',x='problem_size',y='memory',ax=ax, marker='o')
     non_opt_df.plot(kind='line',x='problem_size',y='memory', color='red', ax=ax, marker='o')
     plt.xlabel('Problem size')
-    plt.ylabel('Memory (in Kb)')
+    plt.ylabel(f'Memory usage (in Kb)')
     plt.title('Memory usage vs Problem size')
     plt.legend(['Memory usage by efficient version (in Kb)', 'Memory usage by basic version (in Kb)'])
     plt.savefig('MemoryPlot.png')
@@ -51,23 +56,8 @@ def readfile(file_name):
     return time, memory, X_len, Y_len
 
 def main():
-    ct, iterations = 100, 100
+    ct, iterations = 10, 20
     params = {}
-    # string_list = generate_random_strings(ct)
-    # writeToFile(string_list)
-
-    """
-    {
-        optimized = [{'time': float, 'memory': float}, {}, {}.....]
-    }
-    """
-
-    """
-    params = {
-        input: [opt, non_opt],
-    }
-    """
-
     for itr in range(iterations):
         ct = 100
         string_list = generate_random_strings(ct)
@@ -78,9 +68,9 @@ def main():
             os.system(f'python efficient.py ./files/input{ct+1}.txt ./files/efficient/output{ct+1}.txt')
             os.system(f'python basic.py ./files/input{ct+1}.txt ./files/basic/output{ct+1}.txt')
             time, memory, X_len, Y_len = readfile(f'./files/efficient/output{ct+1}.txt')
-            optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
+            optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len+Y_len})
             time, memory, X_len, Y_len = readfile(f'./files/basic/output{ct+1}.txt')
-            non_optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len*Y_len})
+            non_optimized.append({'time': time, 'memory': memory, 'X_len': X_len, 'Y_len': Y_len, 'problem_size': X_len+Y_len})
     
         if params.get(f'input'):
             opt, non_opt = params[f'input']
@@ -88,11 +78,11 @@ def main():
         else:
             params[f'input'] = [divide(optimized, iterations), divide(non_optimized, iterations)]
 
-        print(f'Iteration {itr+1} done')
+        print(f'Iteration {itr+1}/{iterations} done')
     optimized, non_optimized = params['input'][0], params['input'][1]
     opt_pd = pd.DataFrame(optimized)
     non_opt_pd = pd.DataFrame(non_optimized)
-    plot(opt_pd, non_opt_pd)
+    plot(opt_pd, non_opt_pd, scale_y=False)
 
 
 def add_values(prev, current, iterations=10):
