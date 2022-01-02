@@ -45,13 +45,15 @@ Requirements: Python 3.7+
 
 
 
-Individual contribution
+Individual contribution:
 Dhananjai Chand:  Contributions include but not limited to:
 	- Algorithm implementation & testing for space efficient and basic versions of the string matching algorithm.
 	- Minor contributions in project report write-up, input string generation and graph plotting.
+	
 Sahil Vartak:  Contributions include but not limited to:
 	- Code cleaning and worked on converting it to reusable and object oriented code.
 	- Contributed towards generating plots, code testing and read/write operations of inputs and outputs to text files.
+	
 Vikrame Krishnan: Contributions include but not limited to:
 	- Creating a script to generate random strings for testing and graph plotting.
 	- Implemented a module to calculate the time and memory usage for the both the basic and efficient algorithm implementation. Further, coded the module to generate a time and memory usage plot and draw a comparison between the two algorithms.
